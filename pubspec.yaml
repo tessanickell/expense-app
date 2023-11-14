@@ -41,6 +41,8 @@ dependencies:
   money_input_formatter: ^2.0.0
   percent_indicator: ^4.2.3
   font_awesome_flutter: ^10.6.0
+  intl: ^0.18.1
+  currency_text_input_formatter: ^2.1.10
 
 dev_dependencies:
   flutter_test:

@@ -1,13 +1,12 @@
 import 'package:expense_app/models/category.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CategoryStore extends ChangeNotifier {
   List<Category> categories = [
-    Category(100.00, "Gym Membership",
-        const Icon(FluentIcons.access_time_20_filled)),
-    Category(500.00, "Food", const Icon(FluentIcons.access_time_20_filled)),
-    Category(300.00, "Clothes", const Icon(FluentIcons.access_time_20_filled)),
+    Category(100.00, "Gym Membership", FontAwesomeIcons.dumbbell),
+    Category(500.00, "Food", FontAwesomeIcons.pizzaSlice),
+    Category(300.00, "Clothes", FontAwesomeIcons.shirt),
   ];
 
   void addCategory(Category category) {

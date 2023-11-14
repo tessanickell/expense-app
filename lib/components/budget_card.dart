@@ -1,5 +1,6 @@
 import 'package:expense_app/models/category.dart';
 import 'package:expense_app/models/expense.dart';
+import 'package:expense_app/store/avatar_store.dart';
 import 'package:expense_app/store/category_store.dart';
 import 'package:expense_app/store/expense_store.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,8 @@ class BudgetCard extends StatelessWidget {
     final expenses = Provider.of<ExpenseStore>(context, listen: true).expenses;
 
     double totalSpent = getSumOfAllExpenses(expenses);
-    double remainingBudget = (getSumOfAllCategories(categories) - totalSpent);
-    double totalBudget = totalSpent + remainingBudget;
+    double totalBudget = Provider.of<UserStore>(context, listen: true).budget;
+    double remainingBudget = (totalBudget - totalSpent);
 
     return Container(
       decoration: BoxDecoration(
@@ -54,7 +55,7 @@ class BudgetCard extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                     color: Colors.white)),
-            Text("\$$totalBudget",
+            Text("\$${totalBudget.toStringAsFixed(2)}",
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 35,
@@ -67,7 +68,9 @@ class BudgetCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 0.0),
                 animationDuration: 1000,
                 lineHeight: 20.0,
-                percent: totalSpent / totalBudget,
+                percent: (totalSpent / totalBudget >= 1.0)
+                    ? 1.0
+                    : (totalSpent / totalBudget),
                 progressColor: const Color(0xffFFD64E),
               ),
             ),
@@ -88,7 +91,7 @@ class BudgetCard extends StatelessWidget {
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(
-                        text: "\$$totalSpent",
+                        text: "\$${totalSpent.toStringAsFixed(2)}",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium
@@ -122,7 +125,7 @@ class BudgetCard extends StatelessWidget {
                   text: TextSpan(
                     children: <TextSpan>[
                       TextSpan(
-                        text: "\$$remainingBudget",
+                        text: "\$${remainingBudget.toStringAsFixed(2)}",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium

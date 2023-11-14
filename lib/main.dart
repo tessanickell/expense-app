@@ -1,6 +1,7 @@
 import 'package:expense_app/pages/avatar_picker.dart';
 import 'package:expense_app/pages/home.dart';
 import 'package:expense_app/pages/login.dart';
+import 'package:expense_app/pages/new_category.dart';
 import 'package:expense_app/pages/onboarding_username.dart';
 import 'package:expense_app/pages/splash.dart';
 import 'package:expense_app/store/avatar_store.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (context) => ExpenseStore()),
           ChangeNotifierProvider(create: (context) => CategoryStore()),
-          ChangeNotifierProvider(create: (context) => AvatarStore()),
+          ChangeNotifierProvider(create: (context) => UserStore()),
         ],
         child: MaterialApp(
           theme: ThemeData(
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
             '/avatar_picker': (context) => const AvatarPicker(),
             '/login': (context) => const Login(),
             '/home': (context) => const Home(),
+            '/new_category': (context) => const NewCategory(),
           },
         ));
   }

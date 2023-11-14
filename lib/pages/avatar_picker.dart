@@ -30,7 +30,7 @@ class _AvatarPickerState extends State<AvatarPicker> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
               ),
               Text(
@@ -56,40 +56,40 @@ class _AvatarPickerState extends State<AvatarPicker> {
                 height: 30,
               ),
               CircleAvatar(
-                child: (Provider.of<AvatarStore>(context, listen: true)
+                backgroundColor: Colors.white,
+                radius: 50,
+                child: (Provider.of<UserStore>(context, listen: true)
                             .chosenAvatar ==
                         "")
-                    ? Icon(
+                    ? const Icon(
                         FluentIcons.camera_20_regular,
                         color: Color(0xffBAB7B7),
                         size: 45,
                       )
                     : SvgPicture.asset(
-                        Provider.of<AvatarStore>(context, listen: true)
+                        Provider.of<UserStore>(context, listen: true)
                             .chosenAvatar,
                         fit: BoxFit.fill,
                         height: 100,
                         width: 100),
-                backgroundColor: Colors.white,
-                radius: 50,
               ),
               const SizedBox(height: 30),
               Wrap(
                 spacing: 14,
                 runSpacing: 20,
-                children: AvatarStore()
+                children: UserStore()
                     .avatars
                     .map(
                       (avatar) => GestureDetector(
                         onTap: () => {
-                          Provider.of<AvatarStore>(context, listen: false)
+                          Provider.of<UserStore>(context, listen: false)
                               .setAvatar(avatar)
                         },
                         child: CircleAvatar(
-                          child: SvgPicture.asset(avatar,
-                              fit: BoxFit.fill, height: 100, width: 100),
                           backgroundColor: const Color(0xffD2D6C7),
                           radius: 50,
+                          child: SvgPicture.asset(avatar,
+                              fit: BoxFit.fill, height: 100, width: 100),
                         ),
                       ),
                     )

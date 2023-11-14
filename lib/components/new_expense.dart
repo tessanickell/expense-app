@@ -17,16 +17,20 @@ class NewExpenseDialog extends StatefulWidget {
 class _NewExpenseDialogState extends State<NewExpenseDialog> {
   Category? selectedCategory;
 
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
+  bool _validTitle = false;
+  bool _validCategory = false;
+  bool _validAmount = false;
+
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       scrollable: true,
-      backgroundColor: Color(0xffD2D2C2),
+      backgroundColor: const Color(0xffD2D2C2),
       title: Text("New Expense", style: Theme.of(context).textTheme.titleLarge),
-      content: Container(
+      content: SizedBox(
         height: 400.0,
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -41,7 +45,7 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                     TextSpan(
                         text: 'Title',
                         style: Theme.of(context).textTheme.bodyLarge),
-                    TextSpan(
+                    const TextSpan(
                       text: "*",
                       style: TextStyle(fontSize: 25, color: Color(0xffff0000)),
                     ),
@@ -51,7 +55,7 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
               // RichText(text:"Title", style: Theme.of(context).textTheme.bodyLarge),
             ),
             SizedBox(
-              height: 40,
+              height: _validTitle ? 60 : 40,
               child: Material(
                 color: Colors.transparent,
                 elevation: 18,
@@ -59,6 +63,10 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                 child: TextField(
                     controller: _titleController,
                     decoration: InputDecoration(
+                      errorText:
+                          _validTitle ? "This field can't be empty" : null,
+                      errorStyle: const TextStyle(fontSize: 12, height: 1),
+                      contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.none),
@@ -68,7 +76,7 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                     )),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: RichText(
@@ -78,7 +86,7 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                     TextSpan(
                         text: 'Expense Category',
                         style: Theme.of(context).textTheme.bodyLarge),
-                    TextSpan(
+                    const TextSpan(
                       text: "*",
                       style: TextStyle(fontSize: 25, color: Color(0xffff0000)),
                     ),
@@ -86,8 +94,8 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                 ),
               ),
             ),
-            Container(
-              height: 40,
+            SizedBox(
+              height: _validCategory ? 60 : 40,
               child: Material(
                 borderRadius: BorderRadius.circular(5),
                 color: Colors.white,
@@ -116,13 +124,14 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
+                      _validCategory = true;
                       selectedCategory = value!;
                     });
                   },
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: RichText(
@@ -132,7 +141,7 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                     TextSpan(
                         text: 'Amount',
                         style: Theme.of(context).textTheme.bodyLarge),
-                    TextSpan(
+                    const TextSpan(
                       text: "*",
                       style: TextStyle(fontSize: 25, color: Color(0xffff0000)),
                     ),
@@ -141,16 +150,21 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
               ),
             ),
             SizedBox(
-              height: 40,
+              height: _validAmount ? 60 : 40,
               child: Material(
                 color: Colors.transparent,
                 elevation: 18,
                 shadowColor: const Color.fromRGBO(0, 0, 0, 0.5),
                 child: TextField(
                     inputFormatters: [MoneyInputFormatter()],
-                    keyboardType: TextInputType.number,
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                     controller: _amountController,
                     decoration: InputDecoration(
+                      errorText:
+                          _validAmount ? "This field can't be empty" : null,
+                      errorStyle: const TextStyle(fontSize: 12, height: 1),
+                      contentPadding: const EdgeInsets.all(10.0),
                       border: OutlineInputBorder(
                           borderSide: const BorderSide(
                               width: 0, style: BorderStyle.none),
@@ -167,12 +181,20 @@ class _NewExpenseDialogState extends State<NewExpenseDialog> {
                 height: 40,
                 child: ElevatedButton(
                     onPressed: () => {
-                          Provider.of<ExpenseStore>(context, listen: false)
-                              .addExpense(Expense(
-                                  _titleController.text,
-                                  selectedCategory!.title,
-                                  double.parse(_amountController.text))),
-                          Navigator.pop(context)
+                          setState(() {
+                            _validTitle = _titleController.text.isEmpty;
+                            _validAmount = _amountController.text.isEmpty;
+                          }),
+                          if (!_validTitle && _validCategory && !_validAmount)
+                            {
+                              Provider.of<ExpenseStore>(context, listen: false)
+                                  .addExpense(Expense(
+                                      _titleController.text,
+                                      selectedCategory!.title,
+                                      double.parse(_amountController.text),
+                                      DateTime.now())),
+                              Navigator.of(context).pop()
+                            }
                         },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,

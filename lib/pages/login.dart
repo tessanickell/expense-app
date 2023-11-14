@@ -12,6 +12,11 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool passwordVisible = false;
+  bool _validUsername = false;
+  bool _validPassword = false;
+
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,7 +44,7 @@ class _LoginState extends State<Login> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                 },
               ),
               Text(
@@ -96,23 +101,30 @@ class _LoginState extends State<Login> {
                       ),
                       const SizedBox(height: 6),
                       TextField(
+                          controller: _usernameController,
                           decoration: InputDecoration(
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff9FA67C), width: 2.0),
-                        ),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 8),
-                        border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Color(0xff848383),
-                                width: 1,
-                                style: BorderStyle.none),
-                            borderRadius: BorderRadius.circular(5)),
-                        filled: false,
-                        fillColor: const Color(0xffD9D9D9),
-                      )),
+                            errorText: _validUsername
+                                ? "This field can't be empty"
+                                : null,
+                            errorStyle: const TextStyle(
+                              fontSize: 12,
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color(0xff9FA67C), width: 2.0),
+                            ),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
+                            border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color(0xff848383),
+                                    width: 1,
+                                    style: BorderStyle.none),
+                                borderRadius: BorderRadius.circular(5)),
+                            filled: false,
+                            fillColor: const Color(0xffD9D9D9),
+                          )),
                       const SizedBox(height: 20),
                       Text(
                         "Password",
@@ -123,10 +135,17 @@ class _LoginState extends State<Login> {
                       ),
                       const SizedBox(height: 6),
                       TextField(
+                          controller: _passwordController,
                           keyboardType: TextInputType.visiblePassword,
                           textInputAction: TextInputAction.done,
                           obscureText: passwordVisible,
                           decoration: InputDecoration(
+                            errorText: _validPassword
+                                ? "This field can't be empty"
+                                : null,
+                            errorStyle: const TextStyle(
+                              fontSize: 12,
+                            ),
                             focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Color(0xff9FA67C), width: 2.0),
@@ -173,8 +192,16 @@ class _LoginState extends State<Login> {
                                   borderRadius: BorderRadius.circular(0.0),
                                 ),
                               ),
-                              onPressed: () =>
-                                  {Navigator.pushNamed(context, '/home')},
+                              onPressed: () => {
+                                setState(() {
+                                  _validUsername =
+                                      _usernameController.text.isEmpty;
+                                  _validPassword =
+                                      _passwordController.text.isEmpty;
+                                }),
+                                if (!_validUsername && !_validPassword)
+                                  {Navigator.pushNamed(context, '/home')}
+                              },
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
